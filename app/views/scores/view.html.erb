@@ -1,0 +1,19 @@
+<h1>Scores#view</h1>
+
+<table>
+  <% @games.each do |game| %>
+    <tr class="away">
+      <td><%= fullname(game[:away_team]) %></td>
+      <td><%= score_or_time(game[:away_score], game[:date]) %></td>
+    </tr>
+    <tr class="home">
+      <td><%= fullname(game[:home_team]) %></td>
+      <td><%= score_or_time(game[:home_score], game[:time]) %></td>
+    </tr>
+    <tr class="spacer">
+      <td>&nbsp;</td>
+    </tr>
+  <% end %>
+</table>
+
+
