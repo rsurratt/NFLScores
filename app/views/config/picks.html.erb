@@ -1,0 +1,12 @@
+<h1>Picks for Week <%= @week %></h1>
+<p>Find me in app/views/config/picks.html.erb</p>
+
+  <table>
+    <% sorted_teams().each do |team| %>
+      <tr>
+        <td><%= fullname(team[:abbr]) %></td>
+        <td><%= team[:abbr] %></td>
+        <td><%= (@picks[team[:abbr]].nil?) ? "" : @picks[team[:abbr]] %></td>
+      </tr>
+    <% end %>
+  </table>

@@ -1,5 +1,16 @@
 NFLScores::Application.routes.draw do
+  resources :params
+
+  get "config/week"
+
+  get "config/picks"
+
+  resources :picks
+
   get "scores/view"
+
+  match 'scores/:week' => 'scores#view'
+  match 'scores' => 'scores#view'
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

@@ -1,19 +1,30 @@
-<h1>Scores#view</h1>
+<h1>Scores for Week <%= @week %></h1>
 
-<table>
+<table class="scores">
   <% @games.each do |game| %>
     <tr class="away">
-      <td><%= fullname(game[:away_team]) %></td>
-      <td><%= score_or_time(game[:away_score], game[:date]) %></td>
+      <%= render :partial => 'side', :locals => { :side => game[:away] } %>
     </tr>
     <tr class="home">
-      <td><%= fullname(game[:home_team]) %></td>
-      <td><%= score_or_time(game[:home_score], game[:time]) %></td>
-    </tr>
-    <tr class="spacer">
-      <td>&nbsp;</td>
+      <%= render :partial => 'side', :locals => { :side => game[:home] } %>
     </tr>
   <% end %>
+</table>
+<br/>
+<br/>
+<table class="legend">
+  <tr>
+    <td class="losing">Losing</td>
+  </tr>
+  <tr>
+    <td class="lost">Lost</td>
+  </tr>
+  <tr>
+    <td class="winning">Winning</td>
+  </tr>
+  <tr>
+    <td class="won">Won (or failed to lose)</td>
+  </tr>
 </table>
 
 

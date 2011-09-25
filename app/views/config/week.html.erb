@@ -1,0 +1,12 @@
+<h1>Set Current Week</h1>
+<p>Current week:  <%= @week %></p>
+
+<%= form_for(@week_param) do |f| %>
+  <div class="field">
+    <%= f.label :value %><br />
+    <%= f.text_field :value %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
