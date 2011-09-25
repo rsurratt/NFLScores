@@ -13,7 +13,7 @@ class ScoresController < ApplicationController
     annotate_games()
   end
 
-  private
+  
     @@css_classes = {
         :home => {
             -1 => { :in_progress => :losing,  :final => :lost },
@@ -42,7 +42,7 @@ class ScoresController < ApplicationController
         if home[:score] == '--'
           game[:status] = :not_started
         else
-          if game[:time] == 'FINAL'
+          if game[:time] == 'Final'
             game[:status] = :final
           else
             game[:status] = :in_progress
@@ -54,9 +54,8 @@ class ScoresController < ApplicationController
       end
     end
 
-
     def fetch_games(week)
-      uri = URI.parse("http://www.nfl.com/scores/2011/REG#{week}")
+      uri = URI.parse("http://scores.espn.go.com/nfl/scoreboard?seasonYear=2011&seasonType=2&weekNumber=#{week}")
       res = Net::HTTP.start(uri.host, uri.port) { |http|
         http.get(uri.request_uri)
       }
@@ -66,22 +65,65 @@ class ScoresController < ApplicationController
         return data
       end
 
-      game_texts = body.scan(/<div class="new-score-box.*?class="share"/m)
+      game_texts = body.scan(/<div class="game-header">.*?<div class="game-links">/m)
 
       game_texts.collect { |game_text|
 
-        date = /<span class="date">(.*?)<\/span>/.match(game_text)[1]
-        time = /<span class="time-left" ?>(.*?)<\/span>/.match(game_text)[1]
-        teams_match = game_text.scan(/<a href="\/teams\/profile\?team=(.*?)">/).uniq
-        scores_match = game_text.scan(/<p class="total-score">(.*?)<\/p>/)
-
+        if game_text =~ /<div class="game-status">.*?statusText">(.*?)</
+          time = $1
+        end
 
         {
-          :date => date,
           :time => time,
-          :away => { :team => teams_match[0][0], :score => scores_match[0][0], :alt => date },
-          :home => { :team => teams_match[1][0], :score => scores_match[1][0], :alt => time }
+          :away => parse_team_info(game_text, "visitor", time),
+          :home => parse_team_info(game_text, "home", "")
         }
+      }
+    end
+
+    @@espn_hash = {
+            'nyj' => 'NYJ',
+            'oak' => 'OAK',
+            'bal' => 'BAL',
+            'stl' => 'STL',
+            'kan' => 'KC',
+            'sdg' => 'SD',
+            'gnb' => 'GB',
+            'chi' => 'CHI',
+            'ari' => 'ARI',
+            'sea' => 'SEA',
+            'atl' => 'ATL',
+            'tam' => 'TB',
+            'pit' => 'PIT',
+            'ind' => 'IND',
+            'nwe' => 'NE',
+            'buf' => 'BUF',
+            'sfo' => 'SF',
+            'cin' => 'CIN',
+            'mia' => 'MIA',
+            'cle' => 'CLE',
+            'den' => 'DEN',
+            'ten' => 'TEN',
+            'det' => 'DET',
+            'min' => 'MIN',
+            'hou' => 'HOU',
+            'nor' => 'NO',
+            'nyg' => 'NYG',
+            'phi' => 'PHI',
+            'jac' => 'JAC',
+            'car' => 'CAR',
+            'was' => 'WAS',
+            'dal' => 'DAL'
+    }
+
+    def parse_team_info(game_text, side, alt)
+      team_match = game_text.match(/<div class="team #{side}">.*?logo-small logo-nfl-small nfl-small-(.*?)"/)
+      score_match = game_text.match(/<div class="team #{side}">.*?[ah]Total".*?(\d+)</)
+
+      {
+        :team => @@espn_hash[team_match[1]],
+        :score => score_match[1],
+        :alt => alt
       }
     end
 end
