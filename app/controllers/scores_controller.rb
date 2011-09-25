@@ -42,7 +42,7 @@ class ScoresController < ApplicationController
         if home[:score] == '--'
           game[:status] = :not_started
         else
-          if game[:time] == 'FINAL XX'
+          if game[:time] == 'FINAL'
             game[:status] = :final
           else
             game[:status] = :in_progress
