@@ -26,5 +26,20 @@
     <td class="won">Won (or failed to lose)</td>
   </tr>
 </table>
+<br/>
+<table class="paging">
+  <tr>
+    <td>Week: </td>
+    <% (1..16).each do |i| %>
+      <td>
+        <% if i == @week.to_i %>
+          <%= i.to_s %>
+        <% else %>
+          <%= link_to i, "/scores/#{i}" %>
+        <% end %>
+      </td>
+    <% end %>
+  </tr>
+</table>
 
 
