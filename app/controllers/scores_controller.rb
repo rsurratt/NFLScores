@@ -55,7 +55,7 @@ class ScoresController < ApplicationController
     end
 
     def fetch_games(week)
-      uri = URI.parse("http://scores.espn.go.com/nfl/scoreboard?seasonYear=2012&seasonType=2&weekNumber=#{week}")
+      uri = URI.parse("http://scores.espn.go.com/nfl/scoreboard?seasonYear=2013&seasonType=2&weekNumber=#{week}")
       res = Net::HTTP.start(uri.host, uri.port) { |http|
         http.get(uri.request_uri)
       }
